@@ -1,81 +1,53 @@
 package org.launchcode.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Created by Chris Bay
+ */
 @Controller
-@ResponseBody
 public class HelloController {
 
-    //Handles request at path /hello
-//    @GetMapping("hello")
-//    @ResponseBody
-//    public String hello() {
-//        return "Hello, Spring";
-//    }
-
-    //lives at /hello/goodbye
-
-//    @GetMapping("goodbye")
-//    public String goodbye() {
-//        return "Goodbye, Spring";
-//    }
-
-    //lives at /hello/hello
-    //Handles requests of the form/hello?name=LaunchCode
-//    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
-//    public String helloWithQueryParam(@RequestParam String name) {
-//        return "Hello, " + name + "!";
-//    }
-
-    //Handles requests in the form of /hello/LaunchCode
-    @GetMapping("{name}")
-    public String helloWithPathParam(@PathVariable String name) {
-        return "Hello, " + name + "!";
-    }
-
-
-    //lives at /hello/form
-    @GetMapping("form")
+    @GetMapping("goodbye")
     @ResponseBody
+    public String goodbye() {
+        return "Goodbye, Spring!";
+    }
+
+    // Handles requests of the form /hello?name=LaunchCode
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, value = "hello")
+    public String helloWithQueryParam(@RequestParam String name, Model model) {
+        String greeting = "Hello, " + name + "!";
+        model.addAttribute("greeting", greeting);
+        return "hello";
+    }
+
+    // Handles requests of the form /hello/LaunchCode
+    @GetMapping("hello/{name}")
+    public String helloWithPathParam(@PathVariable String name, Model model) {
+        String greeting = "Hello, " + name + "!";
+        model.addAttribute("greeting", greeting);
+        return "hello";
+    }
+
+    // /hello/form
+    @GetMapping("form")
     public String helloForm() {
-        return "<html>" +
-                    "<body>" +
-                        "<form action='result' method='post'>" +
-                            "<input type='text' name='name'>" +
-                            "<select name='language'>" +
-                                "<option value=''>--Select a language--</option>" +
-                                "<option value='english'>English</option>" +
-                                "<option value='spanish'>Spanish</option>" +
-                                "<option value='french'>French</option>" +
-                                "<option value='german'>German</option>" +
-                                "<option value='elvish'>Elvish</option>" +
-                            "</select>" +
-                            "<input type='submit' value='Greet me!'>" +
-                        "</form>" +
-                    "</body>" +
-                "</html>";
+        return "form";
     }
 
-    @RequestMapping(method={RequestMethod.GET, RequestMethod.POST}, value="result")
-    public String createMessage (@RequestParam String name, @RequestParam String language){
-        String translateHello = "";
-
-        if (Objects.equals(language, "english")) {
-            translateHello = "Hello"; }
-        if (Objects.equals(language, "spanish")) {
-            translateHello = "Hola";}
-        if (Objects.equals(language, "french")) {
-            translateHello = "Bonjour";}
-        if (Objects.equals(language, "german")) {
-            translateHello = "Hallo";}
-        if (Objects.equals(language, "elvish")) {
-            translateHello = "Aiya";
-        }
-
-        return translateHello + ", " + name + "!";
+    @GetMapping("hello-names")
+    public String helloNames(Model model) {
+        List<String> names = new ArrayList<>();
+        names.add("LaunchCode");
+        names.add("Java");
+        names.add("JavaScript");
+        model.addAttribute("names", names);
+        return "hello-list";
     }
-
 }
